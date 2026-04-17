@@ -2,13 +2,15 @@
 
 ## Download
 
-**ollama-manager-linux-x64.tar.gz** - Portable Linux executable
+**ollama-manager-v*.*.*-linux-x64.tar.gz** - Portable Linux executable
+
+**Current version:** `ollama-manager-v1.0.0-linux-x64.tar.gz` (to be built)
 
 ## Usage
 
 ```bash
 # Extract
-tar -xzf ollama-manager-linux-x64.tar.gz
+tar -xzf ollama-manager-v*.*.*-linux-x64.tar.gz
 
 # Make executable
 chmod +x ollama-manager
@@ -47,7 +49,8 @@ DESKTOP
 
 ## File Info
 
-- **Filename:** ollama-manager-linux-x64.tar.gz
+- **Filename pattern:** `ollama-manager-v*.*.*-linux-x64.tar.gz`
+- **Current version:** v1.0.0 (to be built)
 - **Type:** Portable binary (no installation required)
 - **Architecture:** x86_64
 - **Size:** ~11-15 MB
@@ -73,8 +76,10 @@ Works on any Linux with glibc:
 ## Verify Download
 
 ```bash
-sha256sum ollama-manager-linux-x64.tar.gz
+sha256sum ollama-manager-v*.*.*-linux-x64.tar.gz
 ```
+
+Compare with checksum in [CHECKSUMS.txt](../../CHECKSUMS.txt)
 
 ## Building
 
@@ -82,5 +87,5 @@ Build on a Linux machine - see [BUILD.md](../../../BUILD.md):
 
 ```bash
 pyinstaller --onefile --windowed --name "ollama-manager" ollama_manager.py
-tar -czf ollama-manager-linux-x64.tar.gz dist/ollama-manager
+tar -czf ollama-manager-v1.0.0-linux-x64.tar.gz -C dist ollama-manager
 ```

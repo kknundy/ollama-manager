@@ -9,12 +9,12 @@ These are **standalone executables** - just download and run. No installation, n
 ## Download
 
 ### Windows (Portable)
-- **File:** [`ollama-manager-windows.exe`](windows/portable/ollama-manager-windows.exe)
-- **Size:** 11 MB
+- **File:** [`ollama-manager-v*.*.* -windows.exe`](windows/portable/)
+- **Current:** `ollama-manager-v1.0.0-windows.exe` (11 MB)
 - **Runs on:** Windows 10/11 (x64)
 
 ### Linux (Portable)
-- **File:** `ollama-manager-linux-x64.tar.gz` *(build required - see below)*
+- **File:** `ollama-manager-v*.*.*-linux-x64.tar.gz` *(build required - see below)*
 - **Runs on:** Any modern Linux distro (x64)
 
 ### macOS
@@ -24,7 +24,7 @@ These are **standalone executables** - just download and run. No installation, n
 
 ### Windows
 
-1. Download [`ollama-manager-windows.exe`](windows/portable/ollama-manager-windows.exe)
+1. Download `ollama-manager-v*.*.*-windows.exe` from [windows/portable/](windows/portable/)
 2. Double-click to run
 3. If SmartScreen appears: Click "More info" → "Run anyway"
 
@@ -32,10 +32,10 @@ These are **standalone executables** - just download and run. No installation, n
 
 ### Linux
 
-1. Download `ollama-manager-linux-x64.tar.gz`
+1. Download `ollama-manager-v*.*.*-linux-x64.tar.gz`
 2. Extract and run:
 ```bash
-tar -xzf ollama-manager-linux-x64.tar.gz
+tar -xzf ollama-manager-v*.*.*-linux-x64.tar.gz
 chmod +x ollama-manager
 ./ollama-manager
 ```
@@ -61,18 +61,16 @@ EOF
 
 ## File Verification (SHA256)
 
-```
-63cbc597b2aec4fc9a60e7734efd063dff2938ae5c97d357d8a24dd920d1d6f6  ollama-manager-windows.exe
-```
+See [CHECKSUMS.txt](CHECKSUMS.txt) for all checksums.
 
 **Verify on Windows (PowerShell):**
 ```powershell
-Get-FileHash ollama-manager-windows.exe -Algorithm SHA256
+Get-FileHash ollama-manager-v*.*.*-windows.exe -Algorithm SHA256
 ```
 
 **Verify on Linux:**
 ```bash
-sha256sum ollama-manager-linux-x64.tar.gz
+sha256sum ollama-manager-v*.*.*-linux-x64.tar.gz
 ```
 
 ## System Requirements

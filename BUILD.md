@@ -21,9 +21,9 @@ Output: `dist/ollama-manager.exe` (~11 MB)
 ```bash
 pyinstaller --onefile --windowed --name "ollama-manager" ollama_manager.py
 chmod +x dist/ollama-manager
-tar -czf ollama-manager-linux-x64.tar.gz -C dist ollama-manager
+tar -czf ollama-manager-v1.0.0-linux-x64.tar.gz -C dist ollama-manager
 ```
-Output: `ollama-manager-linux-x64.tar.gz`
+Output: `ollama-manager-v1.0.0-linux-x64.tar.gz`
 
 ### macOS
 ```bash
@@ -74,7 +74,7 @@ chmod +x dist/ollama-manager
 
 **Create tarball for distribution:**
 ```bash
-tar -czf ollama-manager-linux-x64.tar.gz -C dist ollama-manager
+tar -czf ollama-manager-v1.0.0-linux-x64.tar.gz -C dist ollama-manager
 ```
 
 **Result:** Portable binary that works on any modern Linux distro with glibc.
@@ -82,7 +82,7 @@ tar -czf ollama-manager-linux-x64.tar.gz -C dist ollama-manager
 **To distribute:**
 ```bash
 # Generate checksum
-sha256sum ollama-manager-linux-x64.tar.gz
+sha256sum ollama-manager-v1.0.0-linux-x64.tar.gz
 ```
 
 ---
@@ -194,7 +194,7 @@ Before releasing binaries:
    Get-FileHash ollama-manager-windows.exe -Algorithm SHA256
    
    # Linux/macOS
-   sha256sum ollama-manager-linux-x64.tar.gz
+   sha256sum ollama-manager-v1.0.0-linux-x64.tar.gz
    sha256sum ollama-manager-macos.zip
    ```
 
@@ -248,11 +248,11 @@ jobs:
       - run: pip install pyinstaller
       - run: pyinstaller --onefile --windowed --name "ollama-manager" ollama_manager.py
       - run: chmod +x dist/ollama-manager
-      - run: tar -czf ollama-manager-linux-x64.tar.gz -C dist ollama-manager
+      - run: tar -czf ollama-manager-v1.0.0-linux-x64.tar.gz -C dist ollama-manager
       - uses: actions/upload-artifact@v3
         with:
           name: linux-binary
-          path: ollama-manager-linux-x64.tar.gz
+          path: ollama-manager-v1.0.0-linux-x64.tar.gz
 
   build-macos:
     runs-on: macos-latest

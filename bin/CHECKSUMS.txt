@@ -1,12 +1,14 @@
-# SHA256 Checksums for Ollama Manager v1.0.0
+# SHA256 Checksums for Ollama Manager
 
 Portable binaries - no installation required!
 
-## Windows Portable
-63cbc597b2aec4fc9a60e7734efd063dff2938ae5c97d357d8a24dd920d1d6f6  windows/portable/ollama-manager-windows.exe
+## Version 1.0.0
 
-## Linux Portable (x64)
-(build on Linux - see BUILD.md)
+### Windows Portable
+63cbc597b2aec4fc9a60e7734efd063dff2938ae5c97d357d8a24dd920d1d6f6  ollama-manager-v1.0.0-windows.exe
+
+### Linux Portable (x64)
+(to be built on Linux - see BUILD.md)
 
 ---
 
@@ -14,10 +16,18 @@ Portable binaries - no installation required!
 
 Windows (PowerShell):
 ```powershell
-Get-FileHash ollama-manager-windows.exe -Algorithm SHA256
+Get-FileHash ollama-manager-v*.*.*-windows.exe -Algorithm SHA256
 ```
 
 Linux/macOS:
 ```bash
-sha256sum ollama-manager-linux-x64.tar.gz
+sha256sum ollama-manager-v*.*.*-linux-x64.tar.gz
 ```
+
+---
+
+## Release Notes
+
+### v1.0.0 (2026-04-17)
+- Initial portable release
+- Windows binary: 11 MB

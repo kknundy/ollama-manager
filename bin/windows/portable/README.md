@@ -2,11 +2,13 @@
 
 ## Download
 
-**ollama-manager-windows.exe** - Portable Windows executable (no installation!)
+**ollama-manager-v*.*.*-windows.exe** - Portable Windows executable (no installation!)
+
+**Current version:** `ollama-manager-v1.0.0-windows.exe`
 
 ## Usage
 
-1. Download `ollama-manager-windows.exe`
+1. Download `ollama-manager-v*.*.*-windows.exe` (replace wildcards with version number)
 2. Place it anywhere (Desktop, Documents, USB drive, etc.)
 3. Double-click to run
 4. If Windows SmartScreen appears:
@@ -30,11 +32,11 @@ Or pin to taskbar:
 
 ## File Info
 
-- **Filename:** ollama-manager-windows.exe
+- **Filename pattern:** `ollama-manager-v*.*.*-windows.exe`
+- **Current version:** v1.0.0
 - **Size:** 11 MB
 - **Architecture:** x86_64
 - **Type:** Portable executable (no Python or installation required)
-- **SHA256:** `63cbc597b2aec4fc9a60e7734efd063dff2938ae5c97d357d8a24dd920d1d6f6`
 
 ## Why Portable?
 
@@ -47,10 +49,10 @@ Or pin to taskbar:
 
 Check file integrity with PowerShell:
 ```powershell
-Get-FileHash ollama-manager-windows.exe -Algorithm SHA256
+Get-FileHash ollama-manager-v*.*.*-windows.exe -Algorithm SHA256
 ```
 
-Should match: `63cbc597b2aec4fc9a60e7734efd063dff2938ae5c97d357d8a24dd920d1d6f6`
+Compare with checksum in [CHECKSUMS.txt](../../CHECKSUMS.txt)
 
 ## Building
 

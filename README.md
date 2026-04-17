@@ -55,8 +55,8 @@ A graphical interface to manage local Ollama models and browse/download from the
 ### Option 1: Download Portable Binaries (Recommended)
 
 **No installation required!** Download and run:
-- **Windows:** [ollama-manager-windows.exe](bin/windows/portable/) (11 MB)
-- **Linux:** Build required - see [BUILD.md](BUILD.md) or use Option 2
+- **Windows:** [ollama-manager-v1.0.0-windows.exe](bin/windows/portable/) (11 MB)
+- **Linux:** [Build required](BUILD.md) - see Option 2 or 3
 
 These are portable executables - just download and double-click to run. See [`bin/README.md`](bin/README.md) for details.
 
