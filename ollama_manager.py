@@ -3,6 +3,8 @@ Ollama Model Manager GUI
 A graphical interface to manage local Ollama models and browse/download from the model library.
 """
 
+__version__ = "1.0.0"
+
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
 import subprocess
@@ -18,7 +20,7 @@ from pathlib import Path
 class OllamaManagerGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("Ollama Model Manager")
+        self.root.title(f"Ollama Model Manager v{__version__}")
         self.root.geometry("1200x700")
 
         # Create menu bar
@@ -742,7 +744,7 @@ ADDITIONAL RESOURCES
 
 VERSION & LICENSE
 ────────────────────────────────────────────────────────────────────────────
-Ollama Model Manager v1.0
+Ollama Model Manager v{__version__}
 MIT License - Free and open source
 """
 
@@ -780,8 +782,8 @@ Ollama is developed by Ollama Inc. and the open source community."""
 
     def show_about(self):
         """Show about dialog for this application"""
-        about_text = """Ollama Model Manager
-Version 1.0
+        about_text = f"""Ollama Model Manager
+Version {__version__}
 
 A graphical user interface for managing Ollama AI models.
 
