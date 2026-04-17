@@ -21,6 +21,9 @@ class OllamaManagerGUI:
         self.root.title("Ollama Model Manager")
         self.root.geometry("1200x700")
 
+        # Create menu bar
+        self.create_menu_bar()
+
         # Popular models catalog (hardcoded)
         # Note: Ollama doesn't provide a public API to browse models dynamically.
         # This is a curated list of popular models from ollama.com/library
@@ -55,6 +58,38 @@ class OllamaManagerGUI:
         self.create_widgets()
         self.refresh_installed_models()
 
+    def create_menu_bar(self):
+        """Create a clean navigation menu bar"""
+        menubar = tk.Menu(self.root)
+        self.root.config(menu=menubar)
+
+        # File Menu
+        file_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Refresh Models", command=self.refresh_installed_models, accelerator="F5")
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self.root.quit, accelerator="Alt+F4")
+
+        # Tools Menu
+        tools_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Tools", menu=tools_menu)
+        tools_menu.add_command(label="Configure VS Code", command=self.configure_vscode_menu)
+        tools_menu.add_command(label="Clear Download Log", command=self.clear_progress)
+        tools_menu.add_separator()
+        tools_menu.add_command(label="Check Ollama Status", command=self.check_ollama_status)
+
+        # Help Menu
+        help_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Help", menu=help_menu)
+        help_menu.add_command(label="Help & Usage", command=self.show_help, accelerator="F1")
+        help_menu.add_command(label="About Ollama", command=self.show_about_ollama)
+        help_menu.add_separator()
+        help_menu.add_command(label="About", command=self.show_about)
+
+        # Bind keyboard shortcuts
+        self.root.bind('<F5>', lambda e: self.refresh_installed_models())
+        self.root.bind('<F1>', lambda e: self.show_help())
+
     def create_widgets(self):
         # Create notebook for tabs
         self.notebook = ttk.Notebook(self.root)
@@ -76,14 +111,23 @@ class OllamaManagerGUI:
         self.create_download_tab()
 
     def create_installed_tab(self):
-        # Top frame with refresh button
+        # Top frame with action buttons
         top_frame = ttk.Frame(self.installed_tab)
         top_frame.pack(fill='x', padx=5, pady=5)
 
-        ttk.Button(top_frame, text="Refresh", command=self.refresh_installed_models).pack(side='left', padx=5)
-        ttk.Button(top_frame, text="Delete Selected", command=self.delete_model).pack(side='left', padx=5)
-        ttk.Button(top_frame, text="Show Model Info", command=self.show_model_info).pack(side='left', padx=5)
-        ttk.Button(top_frame, text="Configure for VS Code", command=self.configure_vscode).pack(side='left', padx=5)
+        # Left side buttons
+        left_buttons = ttk.Frame(top_frame)
+        left_buttons.pack(side='left')
+
+        ttk.Button(left_buttons, text="🔄 Refresh", command=self.refresh_installed_models).pack(side='left', padx=2)
+        ttk.Button(left_buttons, text="ℹ Model Info", command=self.show_model_info).pack(side='left', padx=2)
+        ttk.Button(left_buttons, text="⚙ VS Code Setup", command=self.configure_vscode).pack(side='left', padx=2)
+
+        # Right side buttons
+        right_buttons = ttk.Frame(top_frame)
+        right_buttons.pack(side='right')
+
+        ttk.Button(right_buttons, text="🗑 Delete Selected", command=self.delete_model).pack(side='left', padx=2)
 
         # Treeview for installed models
         columns = ('name', 'id', 'size', 'modified')
@@ -496,6 +540,265 @@ Quick Actions:
                     return
 
         messagebox.showwarning("Not Found", "Could not find VS Code settings folder.\n\nTry opening it manually:\n- Press Ctrl+Shift+P in VS Code\n- Type 'Preferences: Open Settings (JSON)'")
+
+    def configure_vscode_menu(self):
+        """Launch VS Code configuration from menu without model selection"""
+        if not self.installed_tree.get_children():
+            messagebox.showinfo("No Models", "No models installed yet.\n\nDownload a model first, then configure VS Code.")
+            return
+
+        messagebox.showinfo("Configure VS Code",
+                           "Please select a model from the 'Installed Models' tab,\nthen click 'VS Code Setup' button.")
+        self.notebook.select(self.installed_tab)
+
+    def check_ollama_status(self):
+        """Check if Ollama service is running"""
+        status_window = tk.Toplevel(self.root)
+        status_window.title("Ollama Status")
+        status_window.geometry("500x300")
+
+        status_text = scrolledtext.ScrolledText(status_window, wrap=tk.WORD)
+        status_text.pack(fill='both', expand=True, padx=10, pady=10)
+
+        status_text.insert(tk.END, "Checking Ollama status...\n\n")
+
+        def check_status():
+            try:
+                # Check if Ollama CLI is available
+                result = subprocess.run(['ollama', '--version'], capture_output=True, text=True, timeout=5)
+                status_text.insert(tk.END, f"✓ Ollama CLI installed\n")
+                status_text.insert(tk.END, f"  Version: {result.stdout.strip()}\n\n")
+
+                # Check if API is responding
+                url = "http://localhost:11434/api/version"
+                req = urllib.request.Request(url)
+                with urllib.request.urlopen(req, timeout=5) as response:
+                    version_info = json.loads(response.read().decode('utf-8'))
+                    status_text.insert(tk.END, f"✓ Ollama API is running\n")
+                    status_text.insert(tk.END, f"  API Version: {version_info.get('version', 'unknown')}\n\n")
+
+                # List models
+                result = subprocess.run(['ollama', 'list'], capture_output=True, text=True)
+                model_count = len(result.stdout.strip().split('\n')) - 1
+                status_text.insert(tk.END, f"✓ Models installed: {model_count}\n\n")
+
+                status_text.insert(tk.END, "Status: ✓ All systems operational\n")
+
+            except subprocess.TimeoutExpired:
+                status_text.insert(tk.END, "✗ Ollama is not responding (timeout)\n")
+            except FileNotFoundError:
+                status_text.insert(tk.END, "✗ Ollama CLI not found\n")
+                status_text.insert(tk.END, "\nPlease install Ollama from: https://ollama.com\n")
+            except Exception as e:
+                status_text.insert(tk.END, f"✗ Error: {str(e)}\n")
+
+            status_text.config(state='disabled')
+
+        threading.Thread(target=check_status, daemon=True).start()
+
+        ttk.Button(status_window, text="Close", command=status_window.destroy).pack(pady=5)
+
+    def show_help(self):
+        """Display comprehensive help information"""
+        help_window = tk.Toplevel(self.root)
+        help_window.title("Help & Usage Guide")
+        help_window.geometry("800x600")
+
+        help_text = scrolledtext.ScrolledText(help_window, wrap=tk.WORD, font=('Consolas', 10))
+        help_text.pack(fill='both', expand=True, padx=10, pady=10)
+
+        help_content = """
+╔══════════════════════════════════════════════════════════════════════════╗
+║                    OLLAMA MODEL MANAGER - HELP GUIDE                     ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+OVERVIEW
+────────────────────────────────────────────────────────────────────────────
+This application helps you manage AI models for Ollama, a local LLM runtime.
+Download, organize, and configure models for use in VS Code and other tools.
+
+
+GETTING STARTED
+────────────────────────────────────────────────────────────────────────────
+1. Make sure Ollama is installed: https://ollama.com
+2. Browse models in the "Model Catalog" tab
+3. Click on a model and press "Download Selected"
+4. Monitor progress in the "Download Progress" tab
+5. Configure your model for VS Code in the "Installed Models" tab
+
+
+TABS OVERVIEW
+────────────────────────────────────────────────────────────────────────────
+
+📦 INSTALLED MODELS
+   • View all locally installed models
+   • See model size, ID, and last modified date
+   • Delete models you no longer need
+   • View detailed model information
+   • Configure models for VS Code integration
+
+🌐 MODEL CATALOG
+   • Browse 20+ popular AI models
+   • Search by name, description, or use case
+   • Download models from the curated catalog
+   • Enter custom model names or URLs
+
+📊 DOWNLOAD PROGRESS
+   • Real-time download progress
+   • View download logs and errors
+   • Clear logs when needed
+
+
+KEYBOARD SHORTCUTS
+────────────────────────────────────────────────────────────────────────────
+F1          - Open this help guide
+F5          - Refresh installed models
+Alt+F4      - Exit application
+
+
+COMMON TASKS
+────────────────────────────────────────────────────────────────────────────
+
+▸ Download a Model
+  1. Go to "Model Catalog" tab
+  2. Search or browse for a model
+  3. Click on the model row
+  4. Click "Download Selected"
+  5. Wait for download to complete
+
+▸ Download Custom Model
+  1. Go to "Model Catalog" tab
+  2. Enter model name in "Download Custom Model" field
+     Examples: llama3:8b, username/modelname
+  3. Click "Download" button
+
+▸ Delete a Model
+  1. Go to "Installed Models" tab
+  2. Select the model to delete
+  3. Click "Delete Selected" button
+  4. Confirm deletion
+
+▸ View Model Details
+  1. Go to "Installed Models" tab
+  2. Select a model
+  3. Click "Model Info" button
+  4. View parameters, format, and modelfile
+
+▸ Configure for VS Code
+  1. Go to "Installed Models" tab
+  2. Select a model
+  3. Click "VS Code Setup" button
+  4. Follow the instructions to configure Continue extension
+
+
+MODEL NAMING
+────────────────────────────────────────────────────────────────────────────
+Models use the format: model_name:tag
+
+Examples:
+  • llama3.3:70b     - Llama 3.3 with 70B parameters
+  • mistral:7b       - Mistral 7B model
+  • qwen2.5:14b      - Qwen 2.5 with 14B parameters
+
+Tags specify model variants (usually parameter count or quantization level)
+
+
+RECOMMENDED MODELS BY USE CASE
+────────────────────────────────────────────────────────────────────────────
+• General Chat:        llama3.3:70b, qwen2.5:32b, gemma2:27b
+• Coding:              codestral:22b, codegemma:7b
+• Fast/Low Resource:   llama3.2:3b, qwen2.5:7b, phi4:14b
+• Reasoning/Math:      deepseek-r1:70b, deepseek-r1:32b
+• Multilingual:        qwen2.5:72b, qwen2.5:32b
+• Vision/Images:       llama3.2-vision:11b, llama3.2-vision:90b
+• Embeddings:          nomic-embed-text, mxbai-embed-large
+
+
+TROUBLESHOOTING
+────────────────────────────────────────────────────────────────────────────
+Problem: "Ollama CLI not found"
+Solution: Install Ollama from https://ollama.com
+
+Problem: Models won't download
+Solution: Check internet connection, verify Ollama service is running
+         Menu > Tools > Check Ollama Status
+
+Problem: Out of disk space
+Solution: Delete unused models from "Installed Models" tab
+         Large models can be 40+ GB
+
+Problem: VS Code not detecting model
+Solution: Restart VS Code after configuration
+         Verify model appears in "ollama list" command
+
+
+ADDITIONAL RESOURCES
+────────────────────────────────────────────────────────────────────────────
+• Ollama Documentation:  https://github.com/ollama/ollama
+• Model Library:         https://ollama.com/library
+• Continue Extension:    https://continue.dev
+• Support:               GitHub issues or Ollama Discord
+
+
+VERSION & LICENSE
+────────────────────────────────────────────────────────────────────────────
+Ollama Model Manager v1.0
+MIT License - Free and open source
+"""
+
+        help_text.insert(1.0, help_content)
+        help_text.config(state='disabled')
+
+        button_frame = ttk.Frame(help_window)
+        button_frame.pack(fill='x', padx=10, pady=10)
+
+        ttk.Button(button_frame, text="Check Ollama Status",
+                  command=lambda: [help_window.destroy(), self.check_ollama_status()]).pack(side='left', padx=5)
+        ttk.Button(button_frame, text="Close", command=help_window.destroy).pack(side='right', padx=5)
+
+    def show_about_ollama(self):
+        """Show information about Ollama"""
+        about_text = """About Ollama
+
+Ollama is a lightweight, extensible framework for running large language models locally on your machine.
+
+Key Features:
+• Run AI models locally without cloud dependencies
+• Privacy-focused - your data stays on your device
+• Support for multiple model architectures
+• Easy model switching and management
+• API-compatible with OpenAI format
+• Cross-platform (Windows, macOS, Linux)
+
+Website: https://ollama.com
+GitHub: https://github.com/ollama/ollama
+Documentation: https://github.com/ollama/ollama/tree/main/docs
+
+Ollama is developed by Ollama Inc. and the open source community."""
+
+        messagebox.showinfo("About Ollama", about_text)
+
+    def show_about(self):
+        """Show about dialog for this application"""
+        about_text = """Ollama Model Manager
+Version 1.0
+
+A graphical user interface for managing Ollama AI models.
+
+Features:
+• Browse and download popular AI models
+• Manage installed models
+• Configure VS Code integration
+• Real-time download progress
+• Model information viewer
+
+Created with Python and Tkinter
+MIT License
+
+For support and updates:
+GitHub: https://github.com"""
+
+        messagebox.showinfo("About Ollama Model Manager", about_text)
 
 
 def main():
