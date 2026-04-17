@@ -36,3 +36,13 @@ env/
 .DS_Store
 Thumbs.db
 .claude/
+
+# Binaries (keep structure, ignore actual executables)
+bin/**/*.exe
+bin/**/*.deb
+bin/**/*.rpm
+bin/**/*.snap
+bin/**/*.tar.gz
+bin/**/*.dmg
+bin/**/*.app
+!bin/**/README.md

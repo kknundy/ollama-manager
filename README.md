@@ -52,9 +52,19 @@ A graphical interface to manage local Ollama models and browse/download from the
 
 ## Installation
 
+### Option 1: Download Portable Binaries (Recommended)
+
+**No installation required!** Download and run:
+- **Windows:** [ollama-manager-windows.exe](bin/windows/portable/) (11 MB)
+- **Linux:** Build required - see [BUILD.md](BUILD.md) or use Option 2
+
+These are portable executables - just download and double-click to run. See [`bin/README.md`](bin/README.md) for details.
+
+### Option 2: Run from Source
+
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/ollama-manager.git
+git clone https://github.com/kknundy/ollama-manager.git
 cd ollama-manager
 ```
 
@@ -68,144 +78,10 @@ ollama --version
 python ollama_manager.py
 ```
 
-## Building Standalone Executables
+### Option 3: Build from Source
 
-You can create standalone executables for Windows, Linux, and macOS using PyInstaller.
+See [BUILD.md](BUILD.md) for detailed instructions on building standalone executables for your platform.
 
-### Prerequisites for Building
-
-Install PyInstaller:
-```bash
-pip install pyinstaller
-```
-
-### Windows Build
-
-Build a standalone Windows executable:
-```bash
-pyinstaller --onefile --windowed --name "OllamaManager" --icon=icon.ico ollama_manager.py
-```
-
-The executable will be in `dist/OllamaManager.exe`
-
-**Options:**
-- `--onefile`: Creates a single executable file
-- `--windowed`: Hides the console window (GUI-only)
-- `--name`: Sets the executable name
-- `--icon`: Adds a custom icon (optional, requires icon.ico file)
-
-**To run:**
-```bash
-dist\OllamaManager.exe
-```
-
-### Linux Build
-
-Build for Linux:
-```bash
-pyinstaller --onefile --windowed --name "ollama-manager" ollama_manager.py
-```
-
-The executable will be in `dist/ollama-manager`
-
-**Make it executable:**
-```bash
-chmod +x dist/ollama-manager
-```
-
-**To run:**
-```bash
-./dist/ollama-manager
-```
-
-**Optional: Create a desktop entry** (`~/.local/share/applications/ollama-manager.desktop`):
-```ini
-[Desktop Entry]
-Type=Application
-Name=Ollama Manager
-Comment=Manage Ollama AI Models
-Exec=/path/to/dist/ollama-manager
-Icon=/path/to/icon.png
-Terminal=false
-Categories=Utility;Development;
-```
-
-### macOS Build
-
-Build for macOS:
-```bash
-pyinstaller --onefile --windowed --name "OllamaManager" ollama_manager.py
-```
-
-The app bundle will be in `dist/OllamaManager.app`
-
-**To run:**
-```bash
-open dist/OllamaManager.app
-```
-
-Or double-click the app in Finder.
-
-**Note:** On macOS Catalina and later, you may need to allow the app in System Preferences > Security & Privacy.
-
-**To create a .dmg installer (optional):**
-```bash
-# Install create-dmg
-brew install create-dmg
-
-# Create DMG
-create-dmg \
-  --volname "Ollama Manager" \
-  --window-pos 200 120 \
-  --window-size 600 400 \
-  --icon-size 100 \
-  --app-drop-link 425 120 \
-  "OllamaManager.dmg" \
-  "dist/OllamaManager.app"
-```
-
-### Cross-Platform Build Tips
-
-**Reduce executable size:**
-```bash
-pyinstaller --onefile --windowed --strip --name "OllamaManager" ollama_manager.py
-```
-
-**Include additional files (if needed):**
-```bash
-pyinstaller --onefile --windowed --add-data "README.md:." --name "OllamaManager" ollama_manager.py
-```
-
-**Debug build issues:**
-```bash
-# Run without --windowed to see console output
-pyinstaller --onefile --name "OllamaManager" ollama_manager.py
-```
-
-**Build for distribution:**
-1. Test the executable on a clean system without Python installed
-2. For Windows: Consider code signing to avoid SmartScreen warnings
-3. For macOS: Consider notarization for distribution outside App Store
-4. For Linux: Test on multiple distributions (Ubuntu, Fedora, etc.)
-
-### Build Troubleshooting
-
-**Windows: "Failed to execute script"**
-- Remove `--windowed` flag to see error messages
-- Check antivirus hasn't quarantined the exe
-
-**Linux: "cannot execute binary file"**
-- Ensure you built on the same architecture (x64/ARM)
-- Verify executable permissions with `chmod +x`
-
-**macOS: "App is damaged and can't be opened"**
-- Run: `xattr -cr dist/OllamaManager.app`
-- This removes quarantine attributes
-
-**All Platforms: Large executable size**
-- PyInstaller bundles Python and dependencies (~50-100 MB is normal)
-- Use `--strip` flag to reduce size
-- Consider UPX compression (add `--upx-dir` flag)
 
 ## Usage
 
