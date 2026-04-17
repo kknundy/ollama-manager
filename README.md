@@ -292,3 +292,4 @@ MIT License - see LICENSE file for details
 - Built for [Ollama](https://ollama.com/)
 - Model information curated from the Ollama library
 - Uses Python's built-in tkinter for cross-platform compatibility
+- Developed with assistance from AI models: Claude (Anthropic), Qwen, and Codestral
